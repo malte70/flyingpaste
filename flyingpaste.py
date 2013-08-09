@@ -64,8 +64,8 @@ import bottle
 # for the random id of a new paste
 import string, random
 
-# debugging. comment out for productive use.
-bottle.debug(True)
+# debugging if not in productive use.
+bottle.debug(not CONFIG_PRODUCTIVE)
 
 # Now the magic begins. Or something like that...
 pasteapp = bottle.Bottle()
