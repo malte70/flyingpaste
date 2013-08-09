@@ -143,8 +143,7 @@ def add_paste():
 	bottle.redirect("/p/"+paste_id)
 
 if CONFIG_PRODUCTIVE:
-	print "Not implemented yet. Sorry."
-	sys.exit(1)
+	application = pasteapp
 else:
 	pasteapp.run(host="localhost", port=8080)
 
