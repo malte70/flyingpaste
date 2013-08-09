@@ -54,6 +54,27 @@ CONFIG_PRODUCTIVE=False                            # Wether started for testing 
 #    language     string The language which will be used to provide syntax highlighting (which will be added soon)
 #    privacy      string Privacy setting. Must be either public, not_listed or password: followed
 #                        by the password.
+languages = {
+		"text": "Plain text",
+		"bash": "Bash script",
+		"bat": "DOS/Windows Batch file",
+		"c": "C",
+		"cpp": "C++",
+		"css": "CSS (Cascading Style Sheet)",
+		"diff": "Diff/Patch file",
+		"html": "HTML (maybe with nested JavaScript and CSS",
+		"irc": "IRC log (irssi, xchat or weechat style log)",
+		"java": "Java",
+		"js": "JavaScript",
+		"json": "JSON",
+		"make": "Makefile",
+		"html+php": "PHP (with nested HTML, JavaScript and CSS)",
+		"php": "PHP (pure PHP, without nested HTML)",
+		"mysql": "SQL (with MySQL extensions)",
+		"xml": "XML",
+		"vim": "VimL",
+		"yaml": "YAML"
+		}
 
 # os and sys are always needed
 import os,sys
@@ -61,8 +82,10 @@ import os,sys
 #os.chdir(CONFIG_OWNDIR)
 # use bottle as web framework
 import bottle
-# for the random id of a new paste
+# for the random id of a new paste and nl2br
 import string, random
+# to escape the code for html output
+from cgi import escape as htmlspecialchars
 
 # debugging if not in productive use.
 bottle.debug(not CONFIG_PRODUCTIVE)
@@ -87,6 +110,13 @@ def generate_new_paste_id():
 	chars=string.ascii_lowercase + string.digits
 	return ''.join(random.choice(chars) for x in range(size))
 
+def nl2br(text, is_xhtml = False):
+	"""
+	replace every newline with a <br>
+	behaves like the PHP function with the same name.
+	"""
+	return text.replace('\n', '<br>\n') if not is_xhtml else text.replace('\n', '<br />\n')
+	
 # home page. static, at the moment.
 @pasteapp.route("/")
 def home():
@@ -118,6 +148,33 @@ def show_paste_plain(pasteid=None):
 			bottle.abort(401, "Access denied. Paste is not public, and access to private pastes is not supported yet.")
 		return paste_code
 
+# show a paste in a web site
+@pasteapp.route("/p/:pasteid#[a-z0-9-_]+#.html")
+def show_paste_html(pasteid=None):
+	if pasteid == None:
+		bottle.abort(404)
+	else:
+		# get paste from database
+		# TODO, as in show_paste_plain(): make. this. fucking. portable.
+		db = MySQLdb.connect(
+				host=CONFIG_MYSQL_HOST,
+				user=CONFIG_MYSQL_USER,
+				passwd=CONFIG_MYSQL_PASSWORD,
+				db=CONFIG_MYSQL_DB
+				)
+		db_curs = db.cursor()
+		db_curs.execute("SELECT title,description,author_name,author_email,code,language,privacy FROM pastes WHERE id=\""+MySQLdb.escape_string(pasteid)+"\"")
+		db.close()
+		paste = db_curs.fetchall()[0]
+		paste_title = paste[0]
+		paste_description = nl2br(htmlspecialchars(paste[1]))
+		paste_author_name = paste[2]
+		paste_author_email = paste[3]
+		paste_code = nl2br(htmlspecialchars(paste[4]))
+		paste_language = languages[paste[5]]
+		paste_privacy = paste[6]
+		return bottle.template("show_paste", service_name=CONFIG_SERVICE_NAME, title=paste_title, description=paste_description, author_name=paste_author_name, author_email=paste_author_email, code=paste_code, language=paste_language, privacy=paste_privacy)
+	
 @pasteapp.route("/add", method="POST")
 def add_paste():
 	paste_id=generate_new_paste_id()
