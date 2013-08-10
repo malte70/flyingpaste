@@ -24,16 +24,16 @@ Installation
       git clone https://github.com/malte70/flyingpaste
  - Optional: create a special database user for the application
  - create a table using the following SQL statement:
-      CREATE TABLE pastes (
-        id VARCHAR(20) PRIMARY KEY,
-        title VARCHAR(200) DEFAULT "Untitled",
-        description TEXT DEFAULT NULL,
-        author_name VARCHAR(50) DEFAULT "Anonymous",
-        author_email VARCHAR(50) DEFAULT NULL,
-        code TEXT NOT NULL,
-        language VARCHAR(20) DEFAULT "text",
-        privacy VARCHAR(20) DEFAULT "public"
-      );
+       CREATE TABLE pastes (
+         id VARCHAR(20) PRIMARY KEY,
+         title VARCHAR(200) DEFAULT "Untitled",
+         description TEXT DEFAULT NULL,
+         author_name VARCHAR(50) DEFAULT "Anonymous",
+         author_email VARCHAR(50) DEFAULT NULL,
+         code TEXT NOT NULL,
+         language VARCHAR(20) DEFAULT "text",
+         privacy VARCHAR(20) DEFAULT "public"
+       );
  - edit the database settings in the executable (flyingpaste.py)
 
 Running
