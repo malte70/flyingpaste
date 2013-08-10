@@ -86,6 +86,10 @@ import bottle
 import string, random
 # to escape the code for html output
 from cgi import escape as htmlspecialchars
+# pygments for syntax highlighting
+from pygments import highlight as pygments_highlight
+from pygments.lexers import get_lexer_by_name as pygments_get_lexer_by_name
+from pygments.formatters import HtmlFormatter as pygments_HtmlFormatter
 
 # debugging if not in productive use.
 bottle.debug(not CONFIG_PRODUCTIVE)
@@ -170,10 +174,20 @@ def show_paste_html(pasteid=None):
 		paste_description = nl2br(htmlspecialchars(paste[1]))
 		paste_author_name = paste[2]
 		paste_author_email = paste[3]
-		paste_code = nl2br(htmlspecialchars(paste[4]))
+		paste_code = paste[4]
 		paste_language = languages[paste[5]]
 		paste_privacy = paste[6]
+		lexer = pygments_get_lexer_by_name(paste[5], stripall=True, encoding="UTF-8")
+		formatter = pygments_HtmlFormatter(linenos=True, cssclass="source", encoding="UTF-8")
+		paste_code = pygments_highlight(paste_code, lexer, formatter)
+		bottle.response.content_type = 'text/html; charset=UTF-8'
 		return bottle.template("show_paste", service_name=CONFIG_SERVICE_NAME, title=paste_title, description=paste_description, author_name=paste_author_name, author_email=paste_author_email, code=paste_code, language=paste_language, privacy=paste_privacy)
+
+@pasteapp.route("/style.css")
+def style_css():
+	formatter = pygments_HtmlFormatter(linenos=True, cssclass="source", encoding="UTF-8")
+	bottle.response.content_type = 'text/css; charset=UTF-8'
+	return formatter.get_style_defs()
 	
 @pasteapp.route("/add", method="POST")
 def add_paste():
@@ -197,7 +211,7 @@ def add_paste():
 	db_curs.execute('INSERT INTO pastes VALUES (\"'+paste_id+'\", \"'+paste_title+'\", \"'+paste_description+'\", \"'+paste_author_name+'\", \"'+paste_author_email+'\", \"'+paste_code+'\", \"'+paste_lang+'\", \"'+paste_privacy+'\");')
 	db.commit()
 	db.close()
-	bottle.redirect("/p/"+paste_id)
+	bottle.redirect("/p/"+paste_id+".html")
 
 if CONFIG_PRODUCTIVE:
 	application = pasteapp

@@ -4,6 +4,7 @@
 		<meta charset="UTF-8">
 		<title>{{!title}} :: {{!service_name}}</title>
 		<meta name="generator" content="Flying Paste">
+		<link rel="stylesheet" type="text/css" href="/style.css">
 	</head>
 	<body>
 		<h1>{{!service_name}}</h1>
