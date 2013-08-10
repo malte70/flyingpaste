@@ -24,7 +24,7 @@ Installation
       git clone https://github.com/malte70/flyingpaste
  - Optional: create a special database user for the application
  - create a table using the following SQL statement:
-   ```sql
+   ``` sql
    CREATE TABLE pastes (
       id VARCHAR(20) PRIMARY KEY,
       title VARCHAR(200) DEFAULT "Untitled",
