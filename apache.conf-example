@@ -1,0 +1,18 @@
+#
+# Example Configuration for the Apache HTTPd
+#
+<IfModule wsgi_module>
+	<VirtualHost *:80>
+		# Necessary stuff
+		ServerAdmin webmaster@example.com
+		ServerName paste.example.com
+		
+		# Rename flyingpaste.py to flyingpaste.wsgi
+		WSGIScriptAlias / /opt/flyingpaste/flyingpaste.wsgi
+		
+		# Log files
+		ErrorLog ${APACHE_LOG_DIR}/flyingpaste.error.log
+		LogLevel warn
+		CustomLog ${APACHE_LOG_DIR}/flyingpaste.access.log combined
+	</VirtualHost>
+</IfModule>

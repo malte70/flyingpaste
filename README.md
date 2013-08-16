@@ -39,6 +39,11 @@ simple execute the flyingpaste.py from the command line:
 Please note that you have to be in the directory containing the \*.tpl-files,
 otherwise, Flying Paste wouldn't be able to find them.
 
+### Run using Apache's mod_wsgi
+A sample configuration is included in the source as ```apache.conf-example```.
+Modify it for your needs, activate mod_wsgi and restart your Apache server.
+You're done!
+
 Homepage and source code repository
 -----------------------------------
 
