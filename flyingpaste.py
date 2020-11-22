@@ -187,7 +187,11 @@ def show_paste_html(pasteid=None):
 def style_css():
 	formatter = pygments_HtmlFormatter(linenos=True, cssclass="source", encoding="UTF-8")
 	bottle.response.content_type = 'text/css; charset=UTF-8'
-	return formatter.get_style_defs()
+	return file_get_contents("style.css") + "\n\n\n" + formatter.get_style_defs()
+	
+@pasteapp.route("/favicon.png")
+def favicon_png():
+	return bottle.static_file("favicon.png", CONFIG_OWNDIR)
 	
 @pasteapp.route("/add", method="POST")
 def add_paste():

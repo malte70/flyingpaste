@@ -1,0 +1,122 @@
+@charset "UTF-8";
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Sans+Pro:wght@400;600&display=swap');
+
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
+body {
+	font: 18px "Source Sans Pro", sans-serif;
+	color: #111;
+}
+a:link, a:visited {
+	/*color: #0074D9;*/
+	color: #111;
+}
+a:hover, a:active {
+	/*color: #39CCCC;*/
+	color: #FF4136;
+}
+
+header {
+	margin: 0 0 1em;
+	padding: 0;
+	text-align: center;
+}
+header h1 {
+	font: 1.6em "Source Sans Pro", sans-serif;
+	font-weight: 600;
+}
+header h1 a:link, header h1 a:visited {
+	color: #111;
+	text-decoration: none;
+}
+header h1 a:hover, header h1 a:active {
+	/*color: #111;*/
+	/*color: #aaa;*/
+	color: #FF4136;
+	text-decoration: none;
+}
+header h2 {
+	font: 1.4em "Source Sans Pro", sans-serif;
+	font-weight: 600;
+}
+header p a:link, header p a:visited {
+	color: #111;
+}
+header p a:hover, header p a:active {
+	/*color: #aaa;*/
+	color: #FF4136;
+}
+
+main {
+	width: 42em;
+	max-width: 100%;
+	margin: 0 auto 1em;
+	padding: 0 .5em;
+}
+
+form {
+}
+form input {
+	width: 25em;
+	max-width: 100%;
+	display: block;
+	margin: 0 0 1em;
+}
+form textarea[name=description] {
+	font-family: "Source Code Pro", monospace;
+	display: block;
+	width: 25em;
+	max-width: 100%;
+	height: 6em;
+	margin: 0 0 1em;
+}
+form textarea[name=code] {
+	font-family: "Source Code Pro", monospace;
+	display: block;
+	width: 100%;
+	height: 10em;
+	margin: 0 0 1em;
+}
+form .group {
+	display: block;
+	margin: 0 0 1em;
+}
+form button {
+	display: inline-block;
+	padding: .3em;
+}
+
+.sourcetable {
+	width: 100%;
+	padding-left: .6em;
+	background: #f8f8f8;
+}
+.sourcetable .source {
+	padding: .8em;
+}
+.sourcetable pre {
+	font: 1em "Source Code Pro", monospace;
+}
+.sourcetable .source pre {
+	margin: 0;
+}
+
+
+footer {
+	margin: 0 0 1em;
+	padding: 0 .5em;
+	text-align: center;
+}
+footer p {
+	margin: 0 0 .75em;
+}
+footer p:last-child {
+	margin-bottom: 0;
+}
+
+
+
