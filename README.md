@@ -11,7 +11,7 @@ any file required).
 Requirements
 ------------
 
- - Python 2
+ - Python 3
  - bottle
  - Pygments
  - Python-MySQL
@@ -20,27 +20,45 @@ Requirements
 Installation
 ------------
 
- - get the latest code from github with:
-      git clone https://github.com/malte70/flyingpaste
- - Optional: create a special database user for the application
- - create a table using the following SQL statement:
-   ```CREATE TABLE pastes (id VARCHAR(20) PRIMARY KEY, title VARCHAR(200) DEFAULT "Untitled", description TEXT DEFAULT NULL, author_name VARCHAR(50) DEFAULT "Anonymous", author_email VARCHAR(50) DEFAULT NULL, code TEXT NOT NULL, language VARCHAR(20) DEFAULT "text", privacy VARCHAR(20) DEFAULT "public")```
- - edit the database settings in the executable (flyingpaste.py)
+- Get the latest code from github with:
+  ```sh
+  git clone https://github.com/malte70/flyingpaste
+  ```
+- Optional: create a special database user for the application
+- Create a table using the following SQL statement:
+  ```sql
+  CREATE TABLE pastes (
+  	id VARCHAR(20) NOT NULL PRIMARY KEY,
+  	title VARCHAR(200) DEFAULT "Untitled",
+  	description TEXT DEFAULT NULL,
+  	author_name VARCHAR(50) DEFAULT "Anonymous",
+  	author_email VARCHAR(50) DEFAULT NULL,
+  	code TEXT NOT NULL,
+  	language VARCHAR(20) DEFAULT "text",
+  	privacy VARCHAR(20) DEFAULT "public",
+	date_added datetime NOT NULL DEFAULT current_timestamp()
+  ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  ```
+- Generate a configuration using the `configure` script:
+  ```sh
+  cd flyingpaste
+  ./configure
+  ```
 
 Running
 -------
 
 ### Run directly in testing mode
-simple execute the flyingpaste.py from the command line:
+Simply execute `flyingpaste.py` from the command line:
 
-   cd /path/to/flyingpaste
-   python2 flyingpaste.py
-
-Please note that you have to be in the directory containing the \*.tpl-files,
-otherwise, Flying Paste wouldn't be able to find them.
+```sh
+cd /path/to/flyingpaste
+python flyingpaste.py
+```
 
 ### Run using Apache's mod_wsgi
-A sample configuration is included in the source as ```apache.conf-example```.
+
+A sample configuration is included in the source as `doc/apache-example.conf`.
 Modify it for your needs, activate mod_wsgi and restart your Apache server.
 You're done!
 
@@ -50,27 +68,12 @@ Homepage and source code repository
 Available on github: https://github.com/malte70/flyingpaste
 No website at the moment (there will be one later)
 
-Contacting the author
----------------------
-
-If you have wished or just want to contact me,
-write me an EMail to
-
-    me@malte-bublitz.de
-
-You can find my GPG key here (I prefer encrypted mails):
-http://malte70.de/gpg-key.asc
-or here:
-ftp://ftp.malte-bublitz.de/pub/malte70/gpg-key.asc
-or here:
-gopher://flying-sheep.de/0/malte70/contact.txt
-
 Licensing
 ---------
 
 Flying Paste is free/libre software released under the 2-clause BSD license
 (also known as the "Simplified BSD license" or "FreeBSD license"), which
-can be found in the file COPYING.md.
+can be found in the file `LICENSE`.
 
 Submitting bugs/feature requests
 --------------------------------
