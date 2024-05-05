@@ -71,8 +71,7 @@ No website at the moment (there will be one later)
 Licensing
 ---------
 
-Flying Paste is free/libre software released under the 2-clause BSD license
-(also known as the "Simplified BSD license" or "FreeBSD license"), which
+Flying Paste is free/libre software released under the MIT license, which
 can be found in the file `LICENSE`.
 
 Submitting bugs/feature requests
