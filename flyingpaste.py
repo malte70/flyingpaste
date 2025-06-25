@@ -108,14 +108,14 @@ def get_mysql_db_curs():
 
 	)
 	db.set_character_set(MYSQL_CHARACTER_SET)
-	
+
 	db_curs = db.cursor()
 	db_curs.execute('SET NAMES '+MYSQL_CHARACTER_SET+';')
 	db_curs.execute('SET CHARACTER SET '+MYSQL_CHARACTER_SET+';')
 	db_curs.execute('SET character_set_connection='+MYSQL_CHARACTER_SET+';')
-	
+
 	return [db, db_curs]
-	
+
 
 ################################################################################
 # Home page
@@ -128,7 +128,7 @@ def home():
 	#db_curs.execute('SELECT `id`,`title`,`language`,`author_name` FROM `pastes` WHERE `privacy`="public" ORDER BY `date_added` DESC LIMIT 0,10;')
 	db_curs.execute('SELECT `id`,`title`,`language`,`author_name` FROM `pastes` WHERE `privacy`="public" ORDER BY `date_added` DESC;')
 	pastes_res = db_curs.fetchall()
-	
+
 	pastes = []
 	for paste in pastes_res:
 		p = {
@@ -139,7 +139,7 @@ def home():
 		}
 		pastes.append(p)
 	db.close()
-	
+
 	return bottle.template(
 		"home",
 		title     = config.get("APP","SERVICE_NAME"),
@@ -167,10 +167,10 @@ def show_paste_plain(pasteid=None):
 		db_curs.execute("SELECT code,privacy FROM pastes WHERE id=%s", (pasteid,))
 		db.close()
 		paste = db_curs.fetchall()
-		
+
 		if len(paste) == 0:
 			bottle.abort(404, "No paste with id "+str(pasteid)+" found!")
-			
+
 		paste = paste[0]
 		paste_code = paste[0]
 		paste_privacy = paste[1]
@@ -189,7 +189,7 @@ def show_paste_html(pasteid=None):
 	if pasteid == None:
 		if not config.getboolean("APP", "PRODUCTIVE"):
 			print(" {:4}  \"/p/<pasteid>\"  pasteid=\"{}\" => 404 !".format(bottle.request.method, pasteid))
-		
+
 		bottle.abort(404)
 	else:
 		if not config.getboolean("APP", "PRODUCTIVE"):
@@ -202,9 +202,13 @@ def show_paste_html(pasteid=None):
 			bottle.abort(404, "No paste with id "+str(pasteid)+" found!")
 		paste = paste[0]
 		db.close()
-		
+
 		paste_title = paste[0]
-		paste_description = linkify(nl2br(htmlspecialchars(paste[1])))
+		# paste_description = linkify(nl2br(htmlspecialchars(paste[1])))
+		paste_description = paste[1].replace("\n\n```\n","\n\n<code>").replace("\n```\n\n","</code>\n\n")
+		paste_description = htmlspecialchars(paste_description)
+		paste_description = paste_description.replace("&lt;code&gt;","<code>").replace("&lt;/code&gt;","</code>")
+		paste_description = linkify(nl2br(paste_description))
 		paste_author_name = paste[2]
 		paste_author_email = paste[3]
 		paste_code = paste[4]
@@ -213,7 +217,7 @@ def show_paste_html(pasteid=None):
 		lexer = pygments_get_lexer_by_name(paste[5], stripall=True, encoding="UTF-8")
 		formatter = pygments_HtmlFormatter(linenos=True, cssclass="source", encoding="UTF-8")
 		paste_code = pygments_highlight(paste_code, lexer, formatter)
-		
+
 		bottle.response.content_type = 'text/html; charset=UTF-8'
 		return bottle.template(
 			"show_paste",
@@ -230,7 +234,6 @@ def show_paste_html(pasteid=None):
 
 
 
-
 ################################################################################
 # Serve CSS files
 # 
@@ -239,16 +242,15 @@ def pygments_css():
 	formatter = pygments_HtmlFormatter(linenos=True, cssclass="source", encoding="UTF-8")
 	bottle.response.content_type = 'text/css; charset=UTF-8'
 	return file_get_contents("style.css") + "\n\n\n" + formatter.get_style_defs()
-	
+
 @pasteapp.route("/favicon.png")
 def favicon_png():
 	return bottle.static_file("favicon.png", CONFIG_OWNDIR)
-	
+
 #@pasteapp.route("/assets/css/<filename:re:.*\.css")
 @pasteapp.route("/assets/css/:filename#.*\.css#")
 def assets_css(filename):
 	return bottle.static_file(filename, root='assets/css/')
-	
 
 
 
@@ -260,7 +262,6 @@ def assets_css(filename):
 def assets_png(filename):
 	#print("assets_png("+filename+")")
 	return bottle.static_file(filename, root='assets/img/')
-	
 
 
 
@@ -271,7 +272,7 @@ def assets_png(filename):
 def add_paste():
 	if not config.getboolean("APP", "PRODUCTIVE"):
 		print(" {:4}  \"/\" -> 200".format(bottle.request.method))
-	
+
 	paste_id           = generate_new_paste_id()
 	paste_title        = bottle.request.forms.getunicode("title")
 	paste_description  = bottle.request.forms.getunicode("description").replace("\r\n", "\n")
@@ -282,7 +283,7 @@ def add_paste():
 	paste_privacy      = bottle.request.forms.getunicode("privacy")
 	if not paste_privacy in ("public", "not_listed"):
 		bottle.abort(403, "You are trying something evil. Stop it. \""+paste_privacy+"\"")
-	
+
 	db, db_curs = get_mysql_db_curs()
 	db_curs.execute(
 		'INSERT INTO pastes VALUES (%s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP());',
@@ -297,11 +298,10 @@ def add_paste():
 			paste_privacy
 		)
 	)
-	
+
 	db.commit()
 	db.close()
 	bottle.redirect("/p/"+paste_id+".html")
-
 
 
 
@@ -311,8 +311,8 @@ def add_paste():
 # 
 if config.getboolean("APP", "PRODUCTIVE"):
 	application = pasteapp
-	#print("Running Flying-Paste in WSGI mode.", file=sys.stderr)
-	
+	# print("Running Flying-Paste in WSGI mode.", file=sys.stderr)
+
 else:
 	pasteapp.run(host="localhost", port=8080)
-	
+
