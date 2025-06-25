@@ -15,8 +15,23 @@
 		<header>
 			<h1><a href="/">{{!title}}</a></h1>
 			<p>
-				This is a nopaste service, powered by
+				This is a semi-public nopaste service, powered by
 				<a href="https://github.com/malte70/flyingpaste">Flying Paste</a>.
+			</p>
+			<!--<p>
+				Spam and otherwise suspicious content may be removed at any time without a warning.
+			</p>-->
+			<p>
+				Although this service is publicly accessible and anyone can create pastes, it
+				is primarily intended for internal use.
+			</p>
+			<p>
+				Spam, or otherwise suspicious content can be deleted at any time without warning.
+				The permanent storage of uploads is not guaranteed!
+			</p>
+			<p>
+				Possibly illegal content, pastes without code or with a suspicious description, as
+				well as pastes with links to adult content/spam sites/scam sites will be removed!
 			</p>
 		</header>
 		
